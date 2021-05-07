@@ -1,0 +1,80 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+        joke {
+            storePassword '123456'
+            keyAlias = 'pipijoke'
+            keyPassword '123456'
+            storeFile file('../key')
+        }
+    }
+
+
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        applicationId "com.mooc.ppjoke" // 这里一定要写这个，完全一模一样才行，否则会在用QQ登录的时候报错
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    defaultConfig {
+        ndk {
+            // 设置支持的SO库架构
+            abiFilters 'armeabi-v7a', 'x86'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.joke
+        }
+
+        debug {
+            signingConfig signingConfigs.joke
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility "1.8"
+        targetCompatibility "1.8"
+    }
+
+    dataBinding{
+        enabled=true
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.navigation:navigation-fragment:2.3.1'
+    implementation 'androidx.navigation:navigation-ui:2.3.1'
+    implementation 'org.jetbrains:annotations:15.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+
+    //QQ快捷登录
+    implementation files('libs\\open_sdk_r6140_lite.jar')
+
+    implementation project(':libnavannotation')
+    //如果你使用kotlin,这里需要使用 kapt project
+    annotationProcessor project(":libnavcompiler")
+    implementation project(':libnetwork')
+    implementation project(':libcommon')
+
+    //错误收集
+    implementation 'com.tencent.bugly:crashreport:latest.release'
+    implementation 'com.tencent.bugly:nativecrashreport:latest.release'
+}
